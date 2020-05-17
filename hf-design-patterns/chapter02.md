@@ -16,7 +16,117 @@
 ### Design Principle
     Strive for loosely coupled designs between objects that interact
     
-### Using Java's built-in Observer Pattern
+### Version1: First implementation possibility
+```java
+public class WeatherData {
+
+    // instance variable declarations
+
+    public void measurementsChanged() {
+        float temp = getTemperature();
+        float humidity = getHumidity();
+        float pressure = getPressure();
+
+        currentConditionsDisplay.update(temp, humidity, pressure);
+        statisticsDisplay.update(temp, humidity, pressure);
+        forecastDisplay.update(temp, humidity, pressure);
+    }
+
+    // other WeatherData methods here
+}
+```
+
+### Version2: Implementing the Weather Station
+```java
+public interface Subject {
+    public void registerObserver(Observer o);
+    public void removeObserver(Observer o);
+    public void notifyObservers();
+}
+
+public interface Observer {
+    public void update(float temp, float humidity, float pressure);
+}
+
+public interface DisplayElement {
+    public void display();
+}
+
+public class WeatherData implements Subject {
+    private ArrayList<Observer> observers;
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    public WeatherData() {
+        observers = new ArrayList<Observer>();
+    }
+
+    public void registerObserver(Observer o) {
+        observers.add(o);
+    }
+
+    public void removeObserver(Observer o) {
+        int i = observers.indexOf(o);
+        if (i >= 0) {
+            observers.remove(i);
+        }
+    }
+
+    public void notifyObservers() {
+        for(Observer observer : observers){
+            observer.update(temperature, humidity, pressure);
+        }
+    }
+
+    public void measurementsChanged(){
+        notifyObservers();
+    }
+
+    public void setMeasurements(float temperature, float humidity, float pressure){
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.pressure = pressure;
+        measurementsChanged();
+    }
+}
+
+public class CurrentConditionsDisplay implements Observer, DisplayElement {
+    private float temperature;
+    private float humidity;
+    private float pressure;
+    private Subject weatherData;
+
+    public CurrentConditionsDisplay(Subject weatherData){
+        this.weatherData = weatherData;
+        weatherData.registerObserver(this);
+    }
+
+    public void update(float temperature, float humidity, float pressure){
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.pressure = humidity;
+        display();
+    }
+
+    public void display(){
+        System.out.println("Current conditions: " + temperature + "F degrees and " + humidity + "% humidity");
+    }
+}
+
+public class WeatherStation {
+    public static void main(String[] args) {
+        WeatherData weatherData = new WeatherData();
+        CurrentConditionsDisplay currentConditionsDisplay = new CurrentConditionsDisplay(weatherData);
+        weatherData.setMeasurements(80, 65, 30.4f);
+        weatherData.setMeasurements(82, 65, 30.4f);
+        weatherData.setMeasurements(85, 65, 30.4f);
+    }
+}
+
+```
+
+### Version3: Using Java's built-in Observer Pattern
 ```java
 public class WeatherData extends Observable {
 
@@ -51,7 +161,8 @@ public class WeatherData extends Observable {
         return pressure;
     }
 }
-
+```
+```java
 public class CurrentConditionsDisplay implements Observer, DisplayElement {
 
     Observable observable;
@@ -77,7 +188,8 @@ public class CurrentConditionsDisplay implements Observer, DisplayElement {
         System.out.println("Current conditions: " + temperature + "F degrees and " + humidity + "% humidity");
     }
 }
-
+```
+```java
 public class WeatherStation {
 
     public static void main(String[] args) {
@@ -92,8 +204,4 @@ public class WeatherStation {
 }
 ```
 
-:dog:
-
-![add image](/Users/fitch/Downloads/Diagram.png)
-![add image](https://github.com/fitchdev/reading_notes/blob/master/hf-design-patterns/images/Diagram.png)
 
