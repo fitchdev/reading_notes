@@ -8,6 +8,8 @@
     The elements of an aggregate object should be accessed and traversed without exposing its representation (data structures).
     New traversal operations should be defined for an aggregate object without changing its interface.
 
+
+```java
 public interface Iterator() {
     boolean hasNext();
     Object next();
@@ -15,6 +17,7 @@ public interface Iterator() {
 
 public class DinerMenuIterator implements Iterator {}
 public class PancakeMenuIterator implements Iterator {}
+```
 
 Java’s Collection Framework provides another type of iterator interface called ListIterator. This iterator adds previous() and a few other methods to the standard Iterator interface. It is supported by any Collection that implements the List interface.
 
