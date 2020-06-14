@@ -5,24 +5,31 @@
     
     A little-known fact: the Strategy and State Patterns were twins separated at birth.
     
+
 ### Mighty Gumball, Inc.
+
+    Gumball Machine is the Context
 
     Circle is a state - (No Quarter, Has Quarter, Gumball Sold, Out of Gumballs)
     
-    Arrow is a state transition
+    Arrow is a state transition - (Inserts quarter, Ejects quarter, Turns crank, Dispense)
     
-    **No Quarter**
+    No Quarter
         inserts quarter() -> Has Quarer
-    **Has Quarter**
+    Has Quarter
         ejects quarter() -> No Quarter
         turns crank() -> Gumball Sold
-    **Gumball Sold**
+    Gumball Sold
         disperse gumball()
             gumballs > 0 ==> No Quarter
             gumballs = 0 ==> Out of Gumballs
-    **Out of Gmballs**
+    Out of Gmballs
+    
+    Change Request - Winner(1/10 chance client can get double gumballs)
 
 
+### State Vs Strategy
+    
 
 ### BULLET POINTS
     The State Pattern allows an object to have many different behaviors that are based on its internal state.
@@ -45,3 +52,32 @@
     
     State classes may be shared among Context instances.
     
+
+### Code Snippet
+```java
+public class GumballMachine {
+    final static int SOLD_OUT = 0;
+    final static int NO_QUARTER = 1;
+    final static int HAS_QUARER = 2;
+    final static int SOLD = 3;
+
+    public void insertQuarter() {
+        // insert quarter code here
+    }
+    
+    public void ejectQuarter() {
+        // eject quarter code here
+    }
+
+    public void turnCrank() {
+        // turn crank code here
+    }
+    
+    public void dispense() {
+        // dispense code here
+    }
+}
+```
+
+### GitHub code reference
+    https://github.com/fitchdev/reading_notes/tree/master/hf-design-patterns/chapter10
